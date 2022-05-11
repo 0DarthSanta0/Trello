@@ -1,7 +1,64 @@
-:root
-{
+:root {
     --primary-color: #214D8F;
     --secondary-color: #FFE1A5;
     --red-color: #FF5959;
     --back-color: #F4F4F4;
 }
+
+html {
+    background-color: white;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    margin: 0;
+}
+
+p {
+    margin: 0
+}
+
+button {
+    padding: 0;
+    border: 0;
+    border-radius: 2rem;
+    background-color: white;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+}
+
+textarea {
+    resize: unset;
+    border: 0;
+}
+
+header {
+    justify-content: center;
+}
+
+.add-new-table {
+    color: white;
+    font-size: 1rem;
+    background-color: var(--primary-color);
+    width: 14rem;
+    height: 2.5rem;
+}
+
+main {
+    margin: 0 2.69rem;
+    justify-content: start;
+}
+
+.table-item {
+    width: 18.36rem;
+    background-color: var(--back-color);
+    border-radius: 1.2rem;
+}
+
+
