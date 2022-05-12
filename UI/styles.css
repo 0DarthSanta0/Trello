@@ -39,6 +39,7 @@ textarea {
 }
 
 header {
+    margin: 2rem 0;
     justify-content: center;
 }
 
@@ -51,14 +52,68 @@ header {
 }
 
 main {
-    margin: 0 2.69rem;
+    align-items: start;
     justify-content: start;
+    overflow: auto;
 }
 
 .table-item {
+    min-width: 18.36rem;
     width: 18.36rem;
     background-color: var(--back-color);
     border-radius: 1.2rem;
+    margin-left: 2.69rem;
+
 }
 
+.table-item-head {
+    justify-content: end;
+    margin: 0.2rem 0.3rem;
+}
+
+.close-button, .edit-button, .delete-button {
+    background-color: transparent;
+}
+
+.edit-button {
+    margin-bottom: 0.5rem;
+}
+
+.table-item img {
+    height: 1.28rem;
+}
+
+.table-item-content {
+    justify-content: start;
+    align-items: center;
+}
+
+.task-item {
+    align-items: center;
+    width: 16rem;
+    height: 8.64rem;
+    margin-bottom: 1rem;
+    background-color: var(--secondary-color);
+    border-radius: 1rem;
+    justify-content: space-around;
+}
+
+.task-text {
+    border-radius: 1rem;
+    width: 12.57rem;
+    height: 7.64rem;
+}
+
+.table-item-bottom {
+    align-self: center;
+    margin-bottom: 1rem;
+}
+
+.add-new-task {
+    background-color: var(--primary-color);
+    font-size: 1rem;
+    color: white;
+    width: 4.57rem;
+    height: 2.5rem;
+}
 
