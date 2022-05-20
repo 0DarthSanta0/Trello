@@ -31,9 +31,7 @@ function tableRender(tableMap, tableId) {
         <div class="table-item-content column">`;
     tableMap.forEach((itemValue, itemKey) => {
         temp += `<div class="task-item row" id="${itemKey}">
-                <div class="task-text">
-                    ${itemValue}
-                </div>
+                <div class="task-text">${itemValue}</div>
                 <div class="task-item-tools column">
                     <button class="edit-button">
                         <img src="img/editButton.png"  alt="edit">
@@ -68,9 +66,7 @@ function tableFeedRender(dataMap, elementId) {
         <div class="table-item-content column">`;
         value.forEach((itemValue, itemKey) => {
             temp += `<div class="task-item row" id="${itemKey}">
-                <div class="task-text">
-                    ${itemValue}
-                </div>
+                <div class="task-text">${itemValue}</div>
                 <div class="task-item-tools column">
                     <button class="edit-button">
                         <img src="img/editButton.png"  alt="edit">
@@ -112,17 +108,16 @@ class TrelloController {
                     this.addTask(target.parentNode.parentNode.id, "New Task");
                 }
                 if (target.parentNode.classList.contains("edit-button")) {
+                    e.preventDefault();
                     let temp = target.parentNode.parentNode.previousSibling.previousSibling;
                     let text = temp.textContent;
                     if (temp.tagName === "DIV") {
-                        temp.outerHTML = `<textarea class="task-text">
-                        ${text} </textarea>`;
+                        temp.outerHTML = `<textarea class="task-text">${text}</textarea>`;
                     }
                     if (temp.tagName === "TEXTAREA") {
-                        text = temp.value;
+                        text = temp.value + " ";
                         this.editTask(target.parentNode.parentNode.parentNode.parentNode.parentNode.id, target.parentNode.parentNode.parentNode.id, text);
-                        temp.outherHTML = `<div class="task-text">
-                        ${text} </div>`;
+                        temp.outherHTML = `<div class="task-text">${text}</div>`;
                     }
                 }
                 if (target.parentNode.classList.contains("delete-button")) {
@@ -132,8 +127,11 @@ class TrelloController {
                     this.deleteTable(target.parentNode.parentNode.parentNode.id);
                 }
             });
-            main.addEventListener('mousedown', (e) => {
+            main.onmousedown = (e) => {
                 const target = e.target.parentNode;
+                if (e.target.tagName === "TEXTAREA") {
+                    return;
+                }
                 if (target.classList.contains("task-item")) {
                     const item = document.getElementById(target.id);
                     let tableId = target.parentNode.parentNode.id;
@@ -152,17 +150,39 @@ class TrelloController {
                         item.style.top = f.pageY - item.offsetHeight / 2 + 'px';
                     };
                     document.onmousemove = function (f) {
-                        console.log('moooooove');
                         moveAt(f);
                     };
-                    // item.onmouseup = (f) => {
-                    //     this.#firestoreService.deleteTask(tableId, taskId);
-                    //     // document.body.removeChild(item);
-                    //     document.onmousemove = null;
-                    //     item.onmouseup = null;
-                    // };
+                    document.onmouseup = (event) => {
+                        document.body.removeChild(item);
+                        let elemBelow = document.elementFromPoint(event.clientX, event.clientY);
+                        let newTableId = 0;
+                        if (elemBelow.id === "main" || elemBelow.tagName === "BODY" || elemBelow.tagName === "HEADER") {
+                            this.#firestoreService.getTable(tableId);
+                            document.onmousemove = null;
+                            document.onmouseup = null;
+                            return;
+                        }
+                        for (let i = 0; i < 6; ++i) {
+                            if (elemBelow.classList.contains("table-item")) {
+                                newTableId = elemBelow.id;
+                                break;
+                            }
+                            elemBelow = elemBelow.parentNode;
+                        }
+                        if (newTableId === tableId || newTableId === 0) {
+                            this.#firestoreService.getTable(tableId);
+                            document.onmousemove = null;
+                            document.onmouseup = null;
+                            return;
+                        }
+                        this.#firestoreService.deleteTask(tableId, taskId);
+                        this.#firestoreService.addTask(newTableId, text);
+                        this.#firestoreService.getTableFeed();
+                        document.onmousemove = null;
+                        document.onmouseup = null;
+                    };
                 }
-            });
+            };
         });
     }
 
@@ -176,7 +196,6 @@ class TrelloController {
 
     addTable() {
         this.#firestoreService.addTable();
-        console.log("adding");
         this.#firestoreService.getTableFeed();
     }
 
