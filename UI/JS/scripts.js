@@ -90,8 +90,6 @@ function tableFeedRender(dataMap, elementId) {
 
 class TrelloController {
     #firestoreService;
-    #tableCurrentId;
-    #taskCurrentId;
 
     constructor(config) {
         this.#firestoreService = new FirestoreService(config);
@@ -308,21 +306,4 @@ class FirestoreService {
 }
 
 let a = new TrelloController(firebaseConfig);
-// a.addTable();
-// a.deleteTable("OGW0mrsSwDwmNiSYIziq");
-// a.addTask("table1", "mdkcmsdk");
-// a.deleteTask("table1", "Task1");
-// a.editTask("table1", "jpICh74EfmrFwwBJIjsg", "211");
-// console.log(a.getTableFeed());
-// let myMap = new Map;
-// let table1 = new Map;
-// let table2 = new Map;
-// table1.set("task1", "dksod");
-// table1.set("task2", "dkfkds");
-// table2.set("task1", "dksodsdsfdd");
-// table2.set("task2", "dkfkdsfdsdffjkdhsfjksdhfjkdfhsdifhdoifdsывлофытволытволтолыфтволфытволытвлофытвлофытлофвтфолвтфыолтвфыолhuoifhdsoifjsdoifjdsoifjsdfs");
-// myMap.set("table1", table1);
-// myMap.set("table2", table2);
-// tableFeedRender(myMap, "main");
-// console.log(a.getTableFeed());
 a.getTableFeed();
