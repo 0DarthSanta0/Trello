@@ -9,16 +9,16 @@ import {
     getDoc,
     setDoc,
     query,
-    onSnapshot,
+    onSnapshot
 } from "https://www.gstatic.com/firebasejs/9.8.1/firebase-firestore.js"
 
 const firebaseConfig = {
-    apiKey: "AIzaSyDhNAj5vXDe3GNb1rj9ES0puJNpn80UPkY",
-    authDomain: "trello2-0.firebaseapp.com",
-    projectId: "trello2-0",
-    storageBucket: "trello2-0.appspot.com",
-    messagingSenderId: "403423516639",
-    appId: "1:403423516639:web:31a02b686b40df0a51166a"
+    apiKey: "AIzaSyA6WRkqfryOEs1XIeC7e6lNicmvzqdlOrU",
+    authDomain: "trello3-0.firebaseapp.com",
+    projectId: "trello3-0",
+    storageBucket: "trello3-0.appspot.com",
+    messagingSenderId: "747405823861",
+    appId: "1:747405823861:web:6f5806ef0e97ef7bb38d3c"
 };
 
 function tableRender(tableMap, tableId) {
@@ -94,6 +94,8 @@ function tableFeedRender(dataMap, elementId) {
 
 class TrelloController {
     #firestoreService;
+    #tableCurrentId;
+    #taskCurrentId;
 
     constructor(config) {
         this.#firestoreService = new FirestoreService(config);
@@ -130,6 +132,37 @@ class TrelloController {
                     this.deleteTable(target.parentNode.parentNode.parentNode.id);
                 }
             });
+            main.addEventListener('mousedown', (e) => {
+                const target = e.target.parentNode;
+                if (target.classList.contains("task-item")) {
+                    const item = document.getElementById(target.id);
+                    let tableId = target.parentNode.parentNode.id;
+                    let taskId= target.id;
+                    let text = e.target.textContent;
+                    item.ondragstart = function() {
+                        return false;
+                    };
+                    item.style.position = 'absolute';
+                    moveAt(e);
+                    document.body.appendChild(item);
+                    item.style.zIndex = 1000;
+                    function moveAt(f) {
+                        console.log(item);
+                        item.style.left = f.pageX - item.offsetWidth / 2 + 'px';
+                        item.style.top = f.pageY - item.offsetHeight / 2 + 'px';
+                    };
+                    document.onmousemove = function (f) {
+                        console.log('moooooove');
+                        moveAt(f);
+                    };
+                    // item.onmouseup = (f) => {
+                    //     this.#firestoreService.deleteTask(tableId, taskId);
+                    //     // document.body.removeChild(item);
+                    //     document.onmousemove = null;
+                    //     item.onmouseup = null;
+                    // };
+                }
+            });
         });
     }
 
@@ -148,7 +181,7 @@ class TrelloController {
     }
 
     deleteTable(id) {
-        this.#firestoreService.delete(id);
+        this.#firestoreService.deleteTable(id);
         this.#firestoreService.getTableFeed();
     }
 
@@ -159,7 +192,7 @@ class TrelloController {
 
     deleteTask(tableId, taskId) {
         this.#firestoreService.deleteTask(tableId, taskId);
-        this.#firestoreService.getTable(tableId);
+        this.#firestoreService.getTableFeed();
     }
 
     editTask(tableId, taskId, newText) {
@@ -193,7 +226,6 @@ class FirestoreService {
                         index2++;
                         tasksCollection.set(item.id, item.data().text);
                         if (index1 === apiCollectionDocs.docs.length && index2 == subCollectionsName.docs.length) {
-                            console.log("aaaa");
                             tableFeedRender(tableCollection, "main");
                         }
                     });
@@ -227,7 +259,15 @@ class FirestoreService {
     }
 
     async deleteTable(id) {
-        await deleteDoc(doc(this.#db, "tableCollection", `${id}`));
+        const documentsCollection = query(
+            collection(this.#db, "tableCollection", id, "Tasks")
+        );
+        onSnapshot(documentsCollection, (subCollectionsName) => {
+            subCollectionsName.forEach(async (item) => {
+                await deleteDoc(doc(this.#db, "tableCollection", id, "Tasks", item.id));
+            });
+        });
+        await deleteDoc(doc(this.#db, "tableCollection", id));
     }
 
     async addTask(tableId, taskText) {
@@ -267,4 +307,3 @@ let a = new TrelloController(firebaseConfig);
 // tableFeedRender(myMap, "main");
 // console.log(a.getTableFeed());
 a.getTableFeed();
-
