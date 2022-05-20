@@ -91,7 +91,6 @@ main {
 .task-item {
     align-items: center;
     width: 16rem;
-    height: 8.64rem;
     margin-bottom: 1rem;
     background-color: var(--secondary-color);
     border-radius: 1rem;
@@ -99,9 +98,13 @@ main {
 }
 
 .task-text {
+    margin: 0.7rem 0;
+    background-color: white;
     border-radius: 1rem;
-    width: 12.57rem;
-    height: 7.64rem;
+    width: 10.57rem;
+    padding: 1rem;
+    word-wrap: break-word;
+    overflow: hidden;
 }
 
 .table-item-bottom {
